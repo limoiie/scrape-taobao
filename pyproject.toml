@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "scrape-taobao"
+version = "0.1.0"
+description = ""
+authors = ["limoiie <limo.iie4@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "scrape_taobao" }]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+beautifulsoup4 = "^4.12.2"
+selenium = "^4.9.1"
+fire = "^0.5.0"
+rich = "^13.4.1"
+pyyaml = "^6.0"
+
+[tool.black]
+line-length = 80
+target-version = ["py37"]
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
