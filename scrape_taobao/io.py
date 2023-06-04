@@ -29,6 +29,22 @@ def dump(data: dict, out_path: Optional[str], fmt: str):
             raise ValueError("unsupported format: {}".format(fmt))
 
 
+def load(out_path: str, fmt: str):
+    """
+    Load data from file.
+
+    :param out_path: output file path
+    :param fmt: output format, support 'json' and 'yaml'
+    """
+    with open(out_path) as f:
+        if fmt == "json":
+            return json.load(f)
+        elif fmt in ["yaml", "yml"]:
+            return yaml.load(f, Loader=yaml.FullLoader)
+        else:
+            raise ValueError("unsupported format: {}".format(fmt))
+
+
 def load_item_list(item_list: str, n=-1, shuffle=False):
     """
     Load item urls from file.
