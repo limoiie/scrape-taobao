@@ -3,7 +3,7 @@ import os
 
 import rich.progress
 
-from scrape_taobao.commands import ITEMS_DIR, PAGES_DIR, logger
+from scrape_taobao.commands import ITEMS_DIR, PAGES_DIR
 from scrape_taobao.commands.parse_one import parse_one_impl
 
 

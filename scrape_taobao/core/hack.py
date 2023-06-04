@@ -25,8 +25,10 @@ def hide_browser_features(driver: webdriver.Chrome):
 
 
 def prompt_and_login(driver):
-    username = rich.prompt.Prompt.ask("username")
-    password = rich.prompt.Prompt.ask("password", password=True)
+    username = os.environ.get("USERNAME") or rich.prompt.Prompt.ask("username")
+    password = os.environ.get("PASSWORD") or rich.prompt.Prompt.ask(
+        "password", password=True
+    )
 
     login(driver, username, password)
     fake_pause()

@@ -24,6 +24,19 @@ poetry install
 pip install -e .
 ```
 
+### 简单配置
+
+在项目根目录下创建创建`.env`文件，并添加如下内容：
+
+```shell
+# 账号信息将用于登录淘宝，以爬取商品信息
+USERNAME=<your_taobao_username>
+PASSWORD=<your_taobao_password>
+# 以下配置用于模拟人工操作，以防止被淘宝检测到爬虫
+FAKE_PAUSE_MIN_GAP=0.5  # 每次操作后的最小停顿时间
+FAKE_PAUSE_MAX_GAP=3.0  # 每次操作后的最大停顿时间
+```
+
 ## 使用示例
 
 ### 爬取商品列表
