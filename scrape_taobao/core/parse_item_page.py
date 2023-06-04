@@ -1,16 +1,15 @@
 import json
 import re
 from json import JSONDecodeError
-from typing import List
+from typing import List, TextIO, Union
 
 import bs4
 
 from scrape_taobao.bean.item_data import ItemChoiceData, ItemData
 
 
-def parse_item_page(page_filepath: str):
-    with open(page_filepath) as f:
-        page = bs4.BeautifulSoup(f, "html.parser")
+def parse_item_page(page_source: Union[str, TextIO]) -> ItemData:
+    page = bs4.BeautifulSoup(page_source, "html.parser")
 
     if "tmall.com" in page.title.string:
         data = TMallItemPageParser(page).parse()

@@ -242,5 +242,6 @@ cython_debug/
 #.idea/
 
 # Database
-db/
-db/pages/*.html
+cache/
+!cache/pages/.gitkeep
+!cache/items/.gitkeep
