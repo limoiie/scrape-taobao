@@ -62,6 +62,7 @@ def scrape_one_impl(
     fmt: str = "yaml",
     download_only: bool = False,
     no_cache: bool = False,
+    log=logger.info,
 ):
     """
     Scrape a single item page from the given url.
@@ -74,7 +75,7 @@ def scrape_one_impl(
 
     # skip if item file exists
     if not no_cache and os.path.exists(out_filepath):
-        logger.info('skip scrape "{}" as existing'.format(item_id))
+        log('skip scrape "{}" as existing'.format(item_id))
         return
 
     # skip if page source file exists
@@ -82,17 +83,17 @@ def scrape_one_impl(
         # load page source
         page_source = open(page_filepath).read()
 
-        logger.info('skip fetch "{}" as existing'.format(item_id))
+        log('skip fetch "{}" as existing'.format(item_id))
 
     else:
         try:
             # fetch page source
             page_source = fetch_item_page(driver, url)
         except Exception as e:
-            logger.exception('failed to fetch "{}": {}'.format(url, e))
+            log('failed to fetch "{}": {}'.format(url, e))
             raise
 
-        logger.info('fetched "{}" - {}'.format(item_id, driver.title))
+        log('fetched "{}" - {}'.format(item_id, driver.title))
 
         if not no_cache:
             with open(page_filepath, "w+") as f:
@@ -103,7 +104,7 @@ def scrape_one_impl(
             # parse page source
             item = parse_item_page(page_source)
         except Exception as e:
-            logger.exception('failed to parse "{}": {}'.format(url, e))
+            log('failed to parse "{}": {}'.format(url, e))
             raise
 
         dump(dataclasses.asdict(item), out_filepath, fmt=fmt)

@@ -1,6 +1,8 @@
 import glob
 import os
 
+import rich.progress
+
 from scrape_taobao.commands import ITEMS_DIR, PAGES_DIR, logger
 from scrape_taobao.commands.parse_one import parse_one_impl
 
@@ -23,10 +25,20 @@ def parse(
     os.makedirs(pages_dir, exist_ok=True)
     os.makedirs(out_dir, exist_ok=True)
 
-    glob_pat = os.path.join(pages_dir, "*.html")
-    for page_path in glob.glob(glob_pat):
-        try:
-            parse_one_impl(page_path, out_dir=out_dir, fmt=fmt)
-        except Exception as e:
-            logger.exception('failed to parse "{}": {}'.format(page_path, e))
-            continue
+    page_paths = glob.glob(os.path.join(pages_dir, "id=*.html"))
+
+    with rich.progress.Progress(transient=True) as progress:
+        task_id = progress.add_task("parsing", total=len(page_paths))
+
+        for page_path in page_paths:
+            try:
+                parse_one_impl(
+                    page_path, out_dir=out_dir, fmt=fmt, log=progress.log
+                )
+
+            except Exception as e:
+                progress.log('failed to parse "{}": {}'.format(page_path, e))
+                continue
+
+            finally:
+                progress.update(task_id, advance=1)

@@ -1,5 +1,6 @@
 import os
 
+import rich.progress
 from selenium import webdriver
 
 from scrape_taobao.commands import ITEMS_DIR, PAGES_DIR, logger
@@ -44,22 +45,31 @@ def scrape(
         item_urls = load_item_list(item_list, n=n, shuffle=shuffle)
         failed_item_urls = []
 
-        while item_urls:
-            url = item_urls.pop()
+        with rich.progress.Progress(transient=True) as progress:
+            task_id = progress.add_task("scraping", total=len(item_urls))
 
-            try:
-                scrape_one_impl(
-                    url,
-                    driver,
-                    out_dir=out_dir,
-                    pages_dir=pages_dir,
-                    fmt=fmt,
-                    download_only=download_only,
-                    no_cache=no_cache,
-                )
+            while item_urls:
+                url = item_urls.pop()
 
-            except Exception as e:
-                logger.error('failed to scrape item "{}": {}'.format(url, e))
-                failed_item_urls.append(url)
+                try:
+                    scrape_one_impl(
+                        url,
+                        driver,
+                        out_dir=out_dir,
+                        pages_dir=pages_dir,
+                        fmt=fmt,
+                        download_only=download_only,
+                        no_cache=no_cache,
+                        log=progress.log,
+                    )
 
-            fake_pause()
+                except Exception as e:
+                    logger.error(
+                        'failed to scrape item "{}": {}'.format(url, e)
+                    )
+                    failed_item_urls.append(url)
+
+                finally:
+                    progress.update(task_id, advance=1)
+
+                fake_pause()

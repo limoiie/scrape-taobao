@@ -24,7 +24,9 @@ def parse_one(page_path: str, *, out_dir: str = ITEMS_DIR, fmt: str = "yaml"):
         logger.exception('failed to parse "{}": {}'.format(page_path, e))
 
 
-def parse_one_impl(page_path: str, out_dir: str = ITEMS_DIR, fmt: str = "yaml"):
+def parse_one_impl(
+    page_path: str, out_dir: str = ITEMS_DIR, fmt: str = "yaml", log=logger.info
+):
     """
     Parse one item page.
 
@@ -32,6 +34,8 @@ def parse_one_impl(page_path: str, out_dir: str = ITEMS_DIR, fmt: str = "yaml"):
     """
     with open(page_path, "r") as f:
         item_data = parse_item_page(f)
+
+    log('parsed "{}"'.format(os.path.basename(page_path)))
 
     out_filename = os.path.basename(page_path).replace(
         ".html", ".{}".format(fmt)
